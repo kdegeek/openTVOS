@@ -73,14 +73,16 @@ id: root
         id: screenshot
             anchors.fill: parent
             anchors.margins: vpx(2)
-
+			
             asynchronous: true
+			visible: false
             source: boxArt(gameData)
             sourceSize { width: root.width; height: root.height }
             fillMode: Image.PreserveAspectFit
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.verticalCenter: parent.verticalCenter
 
+			// favourite icon
             Rectangle {
             id: favicon
 
@@ -122,6 +124,21 @@ id: root
             color: screenshot.source == "" ? theme.secondary : "black"
             opacity: screenshot.source == "" ? 1 : selected ? 0.0 : 0.2
             visible: false
+        }
+		
+		Rectangle {
+        id: mask
+
+            anchors.fill: screenshot
+            radius: vpx(50)
+            visible: false
+        }
+
+        OpacityMask {
+            anchors.fill: screenshot
+            source: screenshot
+            maskSource: mask
+			visible: false
         }
 
         

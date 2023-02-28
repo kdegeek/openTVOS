@@ -49,36 +49,22 @@ id: root
 
     property bool selected
     property var gameData: modelData
+	
+	Loader {
+    id: borderloader
 
-
-    // In order to use the retropie icons here we need to do a little collection specific hack
-    property bool playVideo: gameData ? gameData.assets.videoList.length && (settings.AllowThumbVideo == "Yes") : ""
-    scale: selected ? 1 : 0.95
-    Behavior on scale { NumberAnimation { duration: 100 } }
-    z: selected ? 10 : 1
-
-    onSelectedChanged: {
-        if (selected && playVideo)
-            fadescreenshot.restart();
-        else {
-            fadescreenshot.stop();
-            screenshot.opacity = 1;
-            container.opacity = 1;
-        }
+        active: selected
+        anchors.fill: parent
+        sourceComponent: border
+        asynchronous: true
     }
 
-    // NOTE: Fade out the bg so there is a smooth transition into the video
-    Timer {
-    id: fadescreenshot
+    Component {
+    id: border
 
-        interval: 1200
-        onTriggered: {
-            if (settings.HideLogo == "Yes")
-                container.opacity = 0;
-            else
-                screenshot.opacity = 0;
-        }
+        ItemBorder { }
     }
+
 
     Item 
     {
@@ -98,6 +84,7 @@ id: root
             smooth: false
             asynchronous: true
             Behavior on opacity { NumberAnimation { duration: 200 } }
+			visible: false
         }
 
         Image {
@@ -116,6 +103,21 @@ id: root
             Behavior on scale { NumberAnimation { duration: 100 } }
             z: 10
         }
+		
+		Rectangle {
+        id: mask
+
+            anchors.fill: screenshot
+            radius: vpx(20)
+            visible: false
+        }
+
+        OpacityMask {
+		id:	maskfunction
+            anchors.fill: screenshot
+            source: screenshot
+            maskSource: mask
+        }
 
         Rectangle {
         id: overlay
@@ -123,6 +125,7 @@ id: root
             anchors.fill: parent
             color: screenshot.source == "" ? theme.secondary : "black"
             opacity: screenshot.source == "" ? 1 : selected ? 0.1 : 0.2
+			radius: vpx(20)
         }
         
         Rectangle {
@@ -133,23 +136,9 @@ id: root
             border.width: vpx(1)
             border.color: "white"
             opacity: 0.1
+			radius: vpx(20)
         }
         
-    }
-
-    Loader {
-    id: borderloader
-
-        active: selected
-        anchors.fill: parent
-        sourceComponent: border
-        asynchronous: true
-    }
-
-    Component {
-    id: border
-
-        ItemBorder { }
     }
 
     Text {

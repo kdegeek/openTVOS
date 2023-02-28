@@ -20,40 +20,21 @@ import QtGraphicalEffects 1.0
 Item {
 id: root
 
-    Image {
+    Rectangle {
     id: border
 
         anchors.fill: parent
-        source: "../assets/images/gradient.png"
-        asynchronous: true
+        color: "white"
         visible: false
         
-        // Highlight animation (ColorOverlay causes graphical glitches on W10)
-        Rectangle {
-            anchors.fill: parent
-            color: "#fff"
-            visible: settings.AnimateHighlight === "Yes"
-            SequentialAnimation on opacity {
-            id: colorAnim
-
-                running: true
-                loops: Animation.Infinite
-                NumberAnimation { to: 1; duration: 200; }
-                NumberAnimation { to: 0; duration: 500; }
-                PauseAnimation { duration: 200 }
-            }
-        }
     }
-
-    BorderImage {
+	
+	Rectangle {
     id: mask
-
+	
         anchors.fill: parent
-        source: "../assets/images/borderimage.gif"
-        border { left: vpx(5); right: vpx(5); top: vpx(5); bottom: vpx(5);}
-        smooth: false
+        radius: vpx(22)
         visible: false
-        asynchronous: true
     }
 
     OpacityMask {
