@@ -38,7 +38,6 @@ id: root
     ListPublisher   { id: listPublisher;   max: settings.ShowcaseColumns; publisher: randoPub }
     ListGenre       { id: listGenre;       max: settings.ShowcaseColumns; genre: randoGenre }
 
-    property var featuredCollection: listFavorites
     property var collection1: getCollection(settings.ShowcaseCollection1, settings.ShowcaseCollection1_Thumbnail)
     property var collection2: getCollection(settings.ShowcaseCollection2, settings.ShowcaseCollection2_Thumbnail)
     property var collection3: getCollection(settings.ShowcaseCollection3, settings.ShowcaseCollection3_Thumbnail)
@@ -108,8 +107,6 @@ id: root
     property string randoPub: (Utils.returnRandom(Utils.uniqueValuesArray('publisher')) || '')
     property string randoGenre: (Utils.returnRandom(Utils.uniqueValuesArray('genreList'))[0] || '').toLowerCase()
 
-    property bool ftue: featuredCollection.games.count == 0
-
     function storeIndices(secondary) {
         storedHomePrimaryIndex = mainList.currentIndex;
         if (secondary)
@@ -124,32 +121,19 @@ id: root
     id: ftueContainer
 
         width: parent.width
-        height: vpx(360)
+        height: parent.height
         visible: ftue
-        opacity: {
-            switch (mainList.currentIndex) {
-                case 0:
-                    return 1;
-                case 1:
-                    return 0.3;
-                case 2:
-                    return 0.1;
-                case -1:
-                    return 0.3;
-                default:
-                    return 0
-            }
-        }
+        opacity: 1
         Behavior on opacity { PropertyAnimation { duration: 1000; easing.type: Easing.OutQuart; easing.amplitude: 2.0; easing.period: 1.5 } }
 
-        /*Image {
+        Image {
             anchors.fill: parent
-            source: "../assets/images/ftueBG01.jpeg"
+            source: "../assets/images/ftueBG01.jpg"
             sourceSize { width: root.width; height: root.height}
             fillMode: Image.PreserveAspectCrop
             smooth: true
             asynchronous: true
-        }*/
+        }
 
         Rectangle {
             anchors.fill: parent
@@ -157,7 +141,7 @@ id: root
             opacity: 0.5
         }
 
-        Video {
+        /*Video {
         id: videocomponent
 
             anchors.fill: parent
@@ -175,34 +159,7 @@ id: root
                 running: true;
             }
 
-        }
-
-        Image {
-        id: ftueLogo
-
-            width: vpx(350)
-            anchors { left: parent.left; leftMargin: globalMargin }
-            source: "../assets/images/gameOS-logo.png"
-            sourceSize: Qt.size(parent.width, parent.height)
-            fillMode: Image.PreserveAspectFit
-            smooth: true
-            asynchronous: true
-            anchors.centerIn: parent
-        }
-
-        Text {
-            text: "Try adding some favorite games"
-            
-            horizontalAlignment: Text.AlignHCenter
-            anchors { bottom: parent.bottom; bottomMargin: vpx(75) }
-            width: parent.width
-            height: contentHeight
-            color: theme.text
-            font.family: subtitleFont.name
-            font.pixelSize: vpx(16)
-            opacity: 0.5
-            visible: false
-        }
+        } */
     }
 
     Item {
@@ -222,7 +179,7 @@ id: root
             smooth: true
             asynchronous: true
             anchors.verticalCenter: parent.verticalCenter
-            visible: !ftueContainer.visible
+            visible: true
         }
 
         Rectangle {
@@ -282,126 +239,6 @@ id: root
     // Using an object model to build the list
     ObjectModel {
     id: mainModel
-
-        ListView {
-        id: featuredlist
-
-            property bool selected: ListView.isCurrentItem
-            focus: selected
-            width: parent.width
-            height: vpx(360)
-            spacing: vpx(0)
-            orientation: ListView.Horizontal
-            clip: true
-            preferredHighlightBegin: vpx(0)
-            preferredHighlightEnd: parent.width
-            highlightRangeMode: ListView.StrictlyEnforceRange
-            //highlightMoveDuration: 200
-            highlightMoveVelocity: -1
-            snapMode: ListView.SnapOneItem
-            keyNavigationWraps: true
-            currentIndex: (storedHomePrimaryIndex == 0) ? storedHomeSecondaryIndex : 0
-            Component.onCompleted: positionViewAtIndex(currentIndex, ListView.Visible)
-            
-            model: !ftue ? featuredCollection.games : 0
-            delegate: featuredDelegate
-
-            Component {
-            id: featuredDelegate
-
-                AnimatedImage {
-                id: background
-
-                    property bool selected: ListView.isCurrentItem && featuredlist.focus
-                    width: featuredlist.width
-                    height: featuredlist.height
-                    source: Utils.fanArt(modelData);
-                    //sourceSize { width: featuredlist.width; height: featuredlist.height }
-                    fillMode: Image.PreserveAspectCrop
-                    asynchronous: true
-                        
-                    onSelectedChanged: {
-                        if (selected)
-                            logoAnim.start()
-                    }
-
-                    Rectangle {
-                        
-                        anchors.fill: parent
-                        color: "black"
-                        opacity: featuredlist.focus ? 0 : 0.5
-                        Behavior on opacity { PropertyAnimation { duration: 150; easing.type: Easing.OutQuart; easing.amplitude: 2.0; easing.period: 1.5 } }
-                    }
-
-                    AnimatedImage {
-                    id: specialLogo
-
-                        width: parent.height - vpx(20)
-                        height: width
-                        source: Utils.logo(modelData)
-                        fillMode: Image.PreserveAspectFit
-                        asynchronous: true
-                        //sourceSize: Qt.size(specialLogo.width, specialLogo.height)
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        opacity: featuredlist.focus ? 1 : 0.5
-
-                        PropertyAnimation { 
-                        id: logoAnim; 
-                            target: specialLogo; 
-                            properties: "y"; 
-                            from: specialLogo.y-vpx(50); 
-                            duration: 100
-                        }
-                    }
-
-                    // Mouse/touch functionality
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: settings.MouseHover == "Yes"
-                        onEntered: { sfxNav.play(); mainList.currentIndex = 0; }
-                        onClicked: {
-                            if (selected)
-                                gameDetails(modelData);  
-                            else
-                                mainList.currentIndex = 0;
-                        }
-                    }
-                }
-            }
-            
-            Row {
-            id: blips
-
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors { bottom: parent.bottom; bottomMargin: vpx(20) }
-                spacing: vpx(10)
-                Repeater {
-                    model: featuredlist.count
-                    Rectangle {
-                        width: vpx(10)
-                        height: width
-                        color: (featuredlist.currentIndex == index) && featuredlist.focus ? theme.accent : theme.text
-                        radius: width/2
-                        opacity: (featuredlist.currentIndex == index) ? 1 : 0.5
-                    }
-                }
-            }
-
-            // List specific input
-            Keys.onUpPressed: settingsbutton.focus = true;
-            Keys.onLeftPressed: { sfxNav.play(); decrementCurrentIndex() }
-            Keys.onRightPressed: { sfxNav.play(); incrementCurrentIndex() }
-            Keys.onPressed: {
-                // Accept
-                if (api.keys.isAccept(event) && !event.isAutoRepeat) {
-                    event.accepted = true;
-                    storedHomeSecondaryIndex = featuredlist.currentIndex;
-                    if (!ftue)
-                        gameDetails(featuredCollection.currentGame(currentIndex));            
-                }
-            }
-        }
         
         // Collections list
         ListView {
