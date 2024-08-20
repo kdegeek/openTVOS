@@ -4,7 +4,7 @@
 
 ## openTVOS theme for Pegasus Frontend
 
-The goal of this project is to create a modern TV frontend, in the vein of Kodi, but with modern looks, and without replacing the abilities of your existing HTPC apps like Jellyfin, Emby & Plex with a beautiful 10 foot user interface forked from the amazing work of gameOS. openTVOS is currently a theme for [Pegasus Frontend](http://pegasus-frontend.org/).
+The goal of this project is to create a modern TV frontend, in the vein of Kodi, but with modern looks- and without replacing the abilities of your existing HTPC apps like Jellyfin, Emby & Plex- with a beautiful 10 foot user interface forked from the amazing work of gameOS. openTVOS is currently a theme for [Pegasus Frontend](http://pegasus-frontend.org/).
 
 ## Installation
 
