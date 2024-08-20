@@ -2,9 +2,9 @@
 
 ![gameOS Pegasus theme](https://i.imgur.com/J4Jh4rq.jpg)
 
-## gameOS theme for Pegasus Frontend
+## openTVOS theme for Pegasus Frontend
 
-The goal of this theme is to create a modern game launcher that can fit in alongside other tvOS-like apps (sometimes called 10 foot user interfaces). gameOS is a theme for [Pegasus Frontend](http://pegasus-frontend.org/).
+The goal of this project is to create a modern TV frontend, in the vein of Kodi, but with modern looks, and without replacing the abilities of your existing HTPC apps like Jellyfin, Emby & Plex with a beautiful 10 foot user interface forked from the amazing work of gameOS. openTVOS is currently a theme for [Pegasus Frontend](http://pegasus-frontend.org/).
 
 ## Installation
 
